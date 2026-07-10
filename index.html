@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta name="google-site-verification" content="FdnCYxFJK7kpfi6Bmcs9i9T6_fKSnEobSmU6m8vvekQ" />
+    <meta name="description" content="Trang web chúc mừng sinh nhật dành cho Bờ Ích - Kỷ niệm và những lời chúc tốt đẹp nhất.">
+    <meta name="keywords" content="Chúc mừng sinh nhật, Happy Birthday Bờ Ích, quà tặng sinh nhật">
+    <meta name="robots" content="index, follow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chúc Mừng Sinh Nhật!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("NFIAM8fKkC2122-KS");
+        })();
+    </script>
+    <style>
+        /* CSS Variables - Mobile First */
+        :root {
+            --font-xs: 0.7rem;
+            --font-sm: 0.875rem;
+            --font-md: 1rem;
+            --font-lg: 1.25rem;
+            --font-xl: 1.75rem;
+            --font-xxl: 2.2rem;
+            --primary: #b5179e;
+            --secondary: #7209b7;
+            --accent: #ffca3a;
+            --blue: #4cc9f0;
+            --gradient-main: linear-gradient(180deg, #ff9cf3 0%, #d64ff5 15%, #1a013c 60%, #05022b 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gradient-main);
+            background-attachment: fixed;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Canvas Starfield */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Overlay */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            font-size: var(--font-xl);
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            font-size: var(--font-sm);
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            transition: 0.3s;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select {
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: var(--font-md);
+            transition: 0.3s;
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(181, 23, 158, 0.5);
+        }
+
+        .btn-secondary {
+            background: #666;
+        }
+
+        .btn-secondary:active {
+            background: #555;
+        }
+
+        /* Main Content */
+        #main-content {
+            display: none;
+            position: relative;
+            z-index: 1;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: fixed;
+            bottom: 65px;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 202, 58, 0.2);
+            display: none;
+        }
+
+        #progress-bar-bg {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            height: 18px;
+            overflow: visible;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    #b5179e,
+                    #ffca3a 30%,
+                    #4cc9f0 60%,
+                    #f72585 80%,
+                    #b5179e 100%);
+            background-size: 300% 100%;
+            border-radius: 20px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            box-shadow:
+                0 0 20px rgba(255, 202, 58, 0.3),
+                0 0 40px rgba(181, 23, 158, 0.2),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 300% 0;
+            }
+            100% {
+                background-position: -300% 0;
+            }
+        }
+
+        #progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.4) 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.4) 75%,
+                    transparent 100%);
+            background-size: 200% 100%;
+            animation: sparkle 3s ease-in-out infinite;
+            border-radius: 20px;
+        }
+
+        @keyframes sparkle {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Icon bánh kem - KHÔNG ANIMATION */
+        #cake-icon {
+            position: absolute;
+            top: 15%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+            filter: drop-shadow(0 0 15px rgba(255, 202, 58, 0.6));
+            pointer-events: none;
+            left: 0%;
+        }
+
+        .sparkle-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffca3a;
+            border-radius: 50%;
+            animation: floatUp 2s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+            100% {
+                transform: translateY(-40px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        #progress-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: var(--font-xs);
+            text-align: center;
+            margin-top: 6px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 202, 58, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        /* Navigation Buttons */
+        #navigation-buttons {
+            display: none;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 998;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #navigation-buttons button {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: var(--font-sm);
+            min-height: 44px;
+            border-radius: 25px;
+        }
+
+        #prev-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #next-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+
+        /* Welcome Screen */
+        #welcome-screen {
+            display: none;
+            padding: 60px 20px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease;
+            opacity: 1;
+            transition: opacity 2s ease;
+        }
+
+        #welcome-screen h1 {
+            font-size: var(--font-xxl);
+            color: var(--accent);
+            text-shadow: 0 0 30px rgba(255, 202, 58, 0.3);
+            line-height: 1.2;
+        }
+
+        #welcome-screen p {
+            font-size: var(--font-lg);
+            color: var(--blue);
+            margin-top: 15px;
+        }
+
+        /* Activity Sections */
+        .activity-section {
+            display: none;
+            padding: 20px 0;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .activity-section h2 {
+            color: var(--accent);
+            font-size: var(--font-xl);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .activity-section p {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: var(--font-sm);
+            margin-bottom: 20px;
+        }
+
+        /* Photo Game */
+        #photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        #photo-grid img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: 0.3s;
+            touch-action: manipulation;
+        }
+
+        #photo-grid img:active {
+            transform: scale(0.95);
+        }
+
+        #game-msg {
+            text-align: center;
+            font-weight: bold;
+            color: var(--blue);
+            min-height: 24px;
+            font-size: var(--font-sm);
+        }
+
+        /* Memory Game */
+        #memory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1.2/1;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px;
+            min-height: 80px;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .memory-card:active {
+            transform: scale(0.95);
+        }
+
+        .memory-card.flipped {
+            background: white;
+            color: #333;
+            border-color: var(--accent);
+        }
+
+        .memory-card.matched {
+            border-color: #4ffb4f;
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .memory-card .caption-text {
+            font-size: var(--font-xs);
+            text-align: center;
+            line-height: 1.3;
+            padding: 4px;
+        }
+
+        #memory-status {
+            text-align: center;
+            color: var(--blue);
+            font-size: var(--font-sm);
+            margin-top: 10px;
+        }
+
+        /* Map Section - CẢI TIẾN */
+        #map-section {
+            padding: 20px 0;
+        }
+
+        #memory-map {
+            position: relative;
+            max-width: 550px;
+            width: 100%;
+            margin: 20px auto;
+            aspect-ratio: 1.2/1;
+            background: radial-gradient(circle at 30% 40%, #2d1b69, #1a013c);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 202, 58, 0.2);
+            box-shadow: inset 0 0 50px rgba(114, 9, 183, 0.2);
+            overflow: visible;
+            min-height: 400px;
+        }
+
+        /* SVG đường nối các mốc */
+        #route-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #route-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        #route-line path {
+            fill: none;
+            stroke: rgba(255, 202, 58, 0.4);
+            stroke-width: 2.5;
+            stroke-dasharray: 8, 6;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 8px rgba(255, 202, 58, 0.2));
+            animation: dashFlow 1.5s linear infinite;
+        }
+
+        @keyframes dashFlow {
+            to {
+                stroke-dashoffset: -14;
+            }
+        }
+
+        .map-marker {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+        }
+
+        .map-marker:active {
+            transform: translate(-50%, -50%) scale(0.85) !important;
+        }
+
+        .map-marker .marker-dot {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 25px rgba(255, 202, 58, 0.3);
+            position: relative;
+        }
+
+        .map-marker .marker-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .map-marker .marker-label {
+            color: white;
+            font-size: var(--font-xs);
+            margin-top: 6px;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        /* Khi mốc được chọn - TO HƠN */
+        .map-marker.active .marker-dot {
+            transform: scale(1.35);
+            border-color: var(--accent);
+            box-shadow: 0 0 50px rgba(255, 202, 58, 0.6), 0 0 80px rgba(255, 202, 58, 0.3);
+            border-width: 4px;
+        }
+
+        .map-marker.active .marker-dot::after {
+            animation: none;
+            border-color: var(--accent);
+            opacity: 0.6;
+        }
+
+        .map-marker.active .marker-label {
+            transform: scale(1.15);
+            background: rgba(255, 202, 58, 0.3);
+            border: 1px solid rgba(255, 202, 58, 0.3);
+        }
+
+        /* Số thứ tự trên mốc */
+        .marker-number {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent);
+            color: #1a013c;
+            font-size: 0.6rem;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a013c;
+            box-shadow: 0 0 15px rgba(255, 202, 58, 0.5);
+        }
+
+        #memory-popup {
+            display: none;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: fadeInUp 0.4s ease;
+            position: relative;
+        }
+
+        #memory-popup h3 {
+            color: var(--accent);
+            font-size: var(--font-lg);
+            margin-bottom: 10px;
+        }
+
+        #memory-popup p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: var(--font-sm);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        #memory-popup .popup-img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-close-popup {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: var(--font-sm);
+            transition: 0.3s;
+        }
+
+        .btn-close-popup:active {
+            transform: scale(0.95);
+        }
+
+        /* Wish Section */
+        #wish-section {
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        #wish-section h2 {
+            color: var(--accent);
+            font-size: var(--font-xl);
+        }
+
+        #wish-input {
+            width: 100%;
+            max-width: 500px;
+            height: 160px;
+            background: #fdfcf0;
+            background-image: linear-gradient(#e1e1e1 1px, transparent 1px);
+            background-size: 100% 1.5rem;
+            line-height: 1.5rem;
+            padding: 12px 12px 12px 35px;
+            border: none;
+            border-left: 3px solid #ffadad;
+            border-radius: 8px;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
+            resize: vertical;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            background: linear-gradient(45deg, #f440d3, var(--blue));
+            padding: 15px 40px;
+            font-size: var(--font-lg);
+            margin-top: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Complete Screen */
+        #complete-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        #complete-screen h1 {
+            font-size: var(--font-xxl);
+            color: var(--accent);
+            text-shadow: 0 0 30px rgba(255, 202, 58, 0.3);
+        }
+
+        #complete-screen .big-emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            display: none;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: var(--font-xs);
+            margin: 10px 0;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            :root {
+                --font-xs: 0.6rem;
+                --font-sm: 0.8rem;
+                --font-md: 0.9rem;
+                --font-lg: 1.1rem;
+                --font-xl: 1.4rem;
+                --font-xxl: 1.8rem;
+            }
+
+            body {
+                padding: 5px;
+            }
+
+            .modal {
+                padding: 20px 15px;
+            }
+
+            #photo-grid {
+                gap: 8px;
+            }
+
+            #memory-grid {
+                gap: 8px;
+            }
+
+            .memory-card {
+                min-height: 70px;
+                font-size: 2rem;
+            }
+
+            #memory-map {
+                padding: 15px;
+                min-height: 320px;
+                aspect-ratio: 1.1/1;
+            }
+
+            .map-marker .marker-dot {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .map-marker .marker-label {
+                font-size: 0.5rem;
+                padding: 1px 5px;
+                white-space: nowrap;
+            }
+
+            .marker-number {
+                width: 16px;
+                height: 16px;
+                font-size: 0.5rem;
+                top: -6px;
+                right: -6px;
+            }
+
+            .map-marker.active .marker-dot {
+                transform: scale(1.2);
+            }
+
+            #route-line path {
+                stroke-width: 2;
+                stroke-dasharray: 6, 5;
+            }
+
+            #navigation-buttons {
+                padding: 8px 10px;
+            }
+
+            #navigation-buttons button {
+                padding: 10px 12px;
+                font-size: var(--font-xs);
+            }
+
+            #progress-container {
+                bottom: 55px;
+                padding: 8px 10px;
+            }
+
+            #progress-bar-bg {
+                height: 14px;
+            }
+
+            #cake-icon {
+                font-size: 20px;
+            }
+
+            #progress-text {
+                font-size: 0.6rem;
+            }
+
+            #wish-input {
+                height: 120px;
+                padding: 10px 10px 10px 25px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #photo-grid {
+                gap: 5px;
+            }
+
+            .memory-card {
+                min-height: 60px;
+                font-size: 1.5rem;
+            }
+
+            #memory-map {
+                padding: 10px;
+                min-height: 280px;
+            }
+
+            .map-marker .marker-dot {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+
+            .map-marker .marker-label {
+                font-size: 0.4rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #memory-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            #photo-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            #memory-map {
+                max-width: 600px;
+                aspect-ratio: 1.3/1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== STARFIELD ===== -->
+    <canvas id="starfield"></canvas>
+
+    <!-- ===== BACKGROUND MUSIC ===== -->
+    <audio id="bg-music" src="nhac_nen.mp3" loop></audio>
+
+    <!-- ===== OVERLAY ===== -->
+    <div id="overlay">
+        <div class="modal" id="step1">
+            <h2>✨ Ayoo, ai đây?</h2>
+            <p>Để coi được những điều bất ngờ tiếp theo thì phải nghe theo sự sắp xếp của ta</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="showForm()">Gét gô</button>
+                <button onclick="noOption()" class="btn-secondary">Hông bé ơi</button>
+            </div>
+        </div>
+
+        <div class="modal" id="step2" style="display:none;">
+            <h3>🎂 Xác minh chính chủ</h3>
+            <div style="display: flex; gap: 5px; justify-content: center; margin-top: 10px; flex-wrap: wrap;">
+                <select id="dob-day" style="width: 30%;"></select>
+                <select id="dob-month" style="width: 35%;"></select>
+                <select id="dob-year" style="width: 30%;"></select>
+            </div>
+            <p style="font-size: var(--font-xs); color: #aaa;">(Ngày mà thiên thần rơi xuống đây là?)</p>
+            <input type="number" id="input-age" placeholder="Cậu đã bao nhiêu nồi bánh chưng gòi">
+            <textarea id="input-thought" placeholder="Viết cảm nghĩ của mình về ngày đặc biệt này nhóe..."></textarea>
+            <p id="error-msg" style="color: #ff4d4d; font-size: var(--font-sm); min-height: 20px;"></p>
+            <button onclick="checkValidation()">Check var</button>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div id="main-content">
+        <div class="container">
+
+            <!-- Welcome Screen -->
+            <div id="welcome-screen">
+                <h1>🎂 CHÚC MỪNG SINH NHẬT!</h1>
+                <p>✨ Vũ trụ đang có món quà bất ngờ dành cho cậu...</p>
+                <div style="font-size: 3rem; margin-top: 20px;" class="float">🎁</div>
+            </div>
+
+            <!-- ===== ACTIVITY 1: PHOTO GAME ===== -->
+            <div class="activity-section" id="photo-game-section">
+                <h2>🧩 Zũ trụ có thử thách cho cậu</h2>
+                <p>Sắp xếp theo mốc thời gian <b>từ thuở khai thiên lập địa đến bây giờ nhóe</b>!</p>
+                <div id="photo-grid"></div>
+                <p id="game-msg"></p>
+                <div class="scroll-indicator">👆 Chạm vào ảnh theo thứ tự</div>
+            </div>
+
+            <!-- ===== ACTIVITY 2: MEMORY GAME ===== -->
+            <div class="activity-section" id="memory-game-section">
+                <h2>🧩 Ký Ức Của Chúng Ta</h2>
+                <p>Ghép ảnh với lời chú thích tương ứng!</p>
+                <div id="memory-grid"></div>
+                <p id="memory-status">Đã tìm thấy: <span id="match-count">0</span>/<span id="total-pairs">0</span> cặp</p>
+                <div class="scroll-indicator">👆 Lật thẻ để ghép đôi</div>
+            </div>
+
+            <!-- ===== ACTIVITY 3: MAP ===== -->
+            <div class="activity-section" id="map-section">
+                <h2>🗺️ Bản Đồ Kỷ Niệm</h2>
+                <p>Chạm vào từng địa điểm để xem lại kỷ niệm!</p>
+                <div id="memory-map">
+                    <!-- SVG đường nối sẽ được tạo bằng JS -->
+                    <div id="route-line"></div>
+                </div>
+                <div id="memory-popup">
+                    <h3 id="popup-title"></h3>
+                    <img id="popup-image" class="popup-img" style="display:none;" alt="Kỷ niệm">
+                    <p id="popup-description"></p>
+                    <button class="btn-close-popup" onclick="closePopup()">Đóng</button>
+                </div>
+                <div class="scroll-indicator">👆 Chạm vào các điểm trên bản đồ</div>
+            </div>
+
+            <!-- ===== ACTIVITY 4: WISH ===== -->
+            <div class="activity-section" id="wish-section">
+                <h2>🌠 Sao băng đang lướt qua, chần chờ chi mà hông ước!</h2>
+                <p style="margin-bottom: 15px;">Gửi ước nguyện của bạn lên vũ trụ ✨</p>
+                <textarea id="wish-input" placeholder="Viết lẹ đi..."></textarea><br>
+                <button class="send-btn" onclick="sendToUniverse()">🚀 GỬI LÊN ZŨ TRỤ</button>
+                <div id="reward-area" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="color: var(--accent); font-style: italic;">"Vũ trụ cảm ơn cậu vì đã gửi gắm ✨"</p>
+                    <div style="font-size: 4rem; margin: 15px 0;" class="float">🌌</div>
+                    <p style="color: rgba(255,255,255,0.7); font-size: var(--font-sm);">Cảm ơn cậu đã cùng tôi ôn lại những kỷ niệm đẹp! ❤️</p>
+                </div>
+            </div>
+
+            <!-- ===== COMPLETE SCREEN ===== -->
+            <div id="complete-screen">
+                <div class="big-emoji">🎉</div>
+                <h1>CHÚC MỪNG SINH NHẬT!</h1>
+                <p style="font-size: var(--font-lg); color: var(--blue); margin: 15px 0;">Cảm ơn cậu đã đồng hành cùng toaii trong hành trình này!</p>
+                <p style="color: rgba(255,255,255,0.6); font-size: var(--font-sm);">Mong rằng những kỷ niệm đẹp sẽ luôn ở bên cậu ❤️</p>
+                <div style="font-size: 2.5rem; margin-top: 20px;">🎂🎈🎁</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== PROGRESS BAR ===== -->
+    <div id="progress-container">
+        <div id="progress-bar-bg">
+            <!-- Bánh kem chạy trên thanh - KHÔNG ANIMATION -->
+            <div id="cake-icon">🎂</div>
+            <div id="progress-bar"></div>
+            <!-- Các hạt sáng trang trí -->
+            <div class="sparkle-particle" style="left: 20%; animation-delay: 0s;"></div>
+            <div class="sparkle-particle" style="left: 40%; animation-delay: 0.7s;"></div>
+            <div class="sparkle-particle" style="left: 60%; animation-delay: 1.4s;"></div>
+            <div class="sparkle-particle" style="left: 80%; animation-delay: 2.1s;"></div>
+        </div>
+        <p id="progress-text">🎂 Tiến độ: 0%</p>
+    </div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <div id="navigation-buttons">
+        <button id="prev-btn" onclick="goToPreviousActivity()">⬅ Quay xe</button>
+        <button id="next-btn" onclick="goToNextActivity()">Next cho chụy ➡</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
+    <script>
+        // ===== CONSTANTS =====
+        const CHINH_XAC_NGAY = "12";
+        const CHINH_XAC_THANG = "07";
+        const CHINH_XAC_NAM = "2005";
+        const CORRECT_AGE = 21;
+
+        const PHOTOS = [
+            { id: 1, src: "https://i.postimg.cc/FsKPGB63/21-6-2018.jpg", label: "21/06/2018", caption: "21/06/2018 Lần đầu chụp chung📸✨" },
+            { id: 2, src: "https://i.postimg.cc/RV0PGDYG/31-1-2022.jpg", label: "31/01/2022", caption: "31/01/2022 Mắc ói quá, cú chụy em oiiii 🤮 " },
+            { id: 3, src: "https://i.postimg.cc/651MPhsr/31-5-2023.jpg", label: "31/05/2023", caption: "31/05/2023 Tạo cái dáng chụp cái đi gòi đi dìa💅" },
+            { id: 4, src: "https://i.postimg.cc/YqSX8sPg/4-7-2023.jpg", label: "04/07/2023", caption: "04/07/2023 Đi chùa cho tịnh tâm🏮" },
+            { id: 5, src: "https://i.postimg.cc/rFphgPHt/10-2-2024.jpg", label: "10/02/2024", caption: "10/02/2024 Đi tô tượng hemmm🎨🖌️" },
+            { id: 6, src: "https://i.postimg.cc/rFphgPH9/29-1-2025.jpg", label: "29/01/2025", caption: "29/01/2025 Zìa lẹ đi mắc đái quá :)))" },
+            { id: 7, src: "https://i.postimg.cc/rFYfH96N/31-1-2025-(2).jpg", label: "31/01/2025", caption: "31/01/2025 Tặng hai cái bằng khen không bít ngạiii 🫣" },
+            { id: 8, src: "https://i.postimg.cc/pX1sSBNQ/20-2-2026.jpg", label: "20/02/2026", caption: "20/02/2026 Đến hẹn lại lên, đi quảng trường típp nhòe💃" },
+            { id: 9, src: "https://i.postimg.cc/tCmBcz0F/21-2-2026.jpg", label: "21/02/2026", caption: "21/02/2026 Một tấm hình bình thường nhứt giữa hàng vạn tấm.....📸🤸‍♀️" }
+        ];
+
+        // ===== STATE =====
+        let currentActivity = 0;
+        let nextExpectedId = 1;
+        let selectedCards = [];
+        let matchedPairs = 0;
+        let isProcessing = false;
+        let progressStep = 0;
+        let popupTimeout = null;
+
+        const ACTIVITIES = ['photo-game-section', 'memory-game-section', 'map-section', 'wish-section'];
+
+        // ===== OVERLAY FUNCTIONS =====
+        function noOption() {
+            alert("Nhấn hay hông gì cũng pải trả lời à :P");
+            showForm();
+        }
+
+        function showForm() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        // ===== DATE DROPDOWNS =====
+        window.onload = function() {
+            const daySelect = document.getElementById('dob-day');
+            const monthSelect = document.getElementById('dob-month');
+            const yearSelect = document.getElementById('dob-year');
+
+            for (let i = 1; i <= 31; i++) {
+                const val = i < 10 ? '0' + i : i;
+                daySelect.options[daySelect.options.length] = new Option(val, val);
+            }
+            for (let i = 1; i <= 12; i++) {
+                const val = i < 10 ? '0' + i : i;
+                monthSelect.options[monthSelect.options.length] = new Option("Tháng " + i, val);
+            }
+            const currentYear = new Date().getFullYear();
+            for (let i = currentYear; i >= 1950; i--) {
+                yearSelect.options[yearSelect.options.length] = new Option(i, i);
+            }
+
+            updateProgress(0, 6);
+        };
+
+        // ===== PROGRESS BAR =====
+        function updateProgress(step, total) {
+            progressStep = step;
+            const percentage = Math.round((step / total) * 100);
+            const bar = document.getElementById('progress-bar');
+            const text = document.getElementById('progress-text');
+            const cake = document.getElementById('cake-icon');
+
+            if (bar) {
+                bar.style.width = percentage + '%';
+
+                if (percentage === 25) {
+                    confetti({ particleCount: 20, spread: 30, origin: { y: 0.9 } });
+                } else if (percentage === 50) {
+                    confetti({ particleCount: 30, spread: 40, origin: { y: 0.9 } });
+                } else if (percentage === 75) {
+                    confetti({ particleCount: 40, spread: 50, origin: { y: 0.9 } });
+                } else if (percentage === 100) {
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.9 } });
+                }
+            }
+
+            if (cake) {
+                cake.style.left = percentage + '%';
+                if (percentage === 100) {
+                    cake.innerText = '🎉';
+                    cake.style.fontSize = '32px';
+                } else if (percentage >= 75) {
+                    cake.innerText = '🍰';
+                } else if (percentage >= 50) {
+                    cake.innerText = '❤️';
+                } else if (percentage >= 25) {
+                    cake.innerText = '🧁';
+                } else {
+                    cake.innerText = '🎂';
+                }
+            }
+
+            if (text) {
+                text.innerText = `🎂 Tiến độ: ${percentage}%`;
+                if (percentage === 100) {
+                    text.innerText = '🎉 Hoàn thành 100%! Chúc mừng sinh nhật! 🎉';
+                    text.style.color = '#ffca3a';
+                    text.style.fontSize = 'var(--font-md)';
+                } else {
+                    text.style.color = 'rgba(255, 255, 255, 0.9)';
+                    text.style.fontSize = 'var(--font-xs)';
+                }
+            }
+        }
+
+        // ===== VALIDATION =====
+        function checkValidation() {
+            /*
+            const d = document.getElementById('dob-day').value;
+            const m = document.getElementById('dob-month').value;
+            const y = document.getElementById('dob-year').value;
+            const age = document.getElementById('input-age').value;
+            const thought = document.getElementById('input-thought').value;
+
+            if (d !== CHINH_XAC_NGAY || m !== CHINH_XAC_THANG || y !== CHINH_XAC_NAM || parseInt(age) !== CORRECT_AGE) {
+                document.getElementById('error-msg').innerText = "Sai gòi kìa, có thiệc sự là thân chưa?";
+                return;
+            }
+
+            if (thought.length < 70) {
+                document.getElementById('error-msg').innerText = "Viết thêm " + (70 - thought.length) +
+                    " ký tự coi, ngày thường chửi người như hát mà :)))";
+                return;
+            }
+
+            document.getElementById('error-msg').innerText = '';
+            */
+
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.volume = 0.5;
+            bgMusic.play().catch(e => console.log('Audio play error:', e));
+
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+
+            const welcome = document.getElementById('welcome-screen');
+            welcome.style.display = 'block';
+            welcome.style.opacity = '1';
+
+            updateProgress(0, 6);
+
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const interval = setInterval(function() {
+                if (Date.now() > animationEnd) {
+                    clearInterval(interval);
+                    return;
+                }
+                confetti({
+                    particleCount: 50,
+                    origin: { x: Math.random(), y: Math.random() - 0.2 }
+                });
+            }, 250);
+
+            setTimeout(() => {
+                welcome.style.opacity = '0';
+                welcome.style.transition = 'opacity 2s ease';
+
+                setTimeout(() => {
+                    welcome.style.display = 'none';
+                    showActivity(0);
+                    updateProgress(1, 6);
+                    document.getElementById('navigation-buttons').style.display = 'flex';
+                    document.getElementById('progress-container').style.display = 'block';
+                }, 2000);
+            }, 5000);
+        }
+
+        // ===== NAVIGATION =====
+        function showActivity(index) {
+            ACTIVITIES.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.display = i === index ? 'block' : 'none';
+                    if (i === index) {
+                        el.style.animation = 'none';
+                        setTimeout(() => el.style.animation = 'fadeInUp 0.5s ease', 10);
+                    }
+                }
+            });
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (prevBtn) {
+                prevBtn.style.opacity = index === 0 ? '0.3' : '1';
+                prevBtn.style.pointerEvents = index === 0 ? 'none' : 'auto';
+            }
+
+            if (nextBtn) {
+                if (index === ACTIVITIES.length - 1) {
+                    nextBtn.innerHTML = '🎉 Hoàn thành';
+                } else {
+                    nextBtn.innerHTML = 'Next cho chụy';
+                }
+            }
+
+            const step = index + 2;
+            updateProgress(step, 6);
+        }
+
+        function goToNextActivity() {
+            if (currentActivity === ACTIVITIES.length - 1) {
+                document.getElementById('wish-section').style.display = 'none';
+                document.getElementById('complete-screen').style.display = 'block';
+                document.getElementById('navigation-buttons').style.display = 'none';
+
+                updateProgress(6, 6);
+
+                setTimeout(() => {
+                    document.getElementById('progress-container').style.display = 'none';
+                }, 3000);
+
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+                setTimeout(() => {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
+                }, 500);
+                setTimeout(() => {
+                    confetti({ particleCount: 100, spread: 50, origin: { y: 0.1 } });
+                }, 1000);
+                return;
+            }
+
+            currentActivity++;
+            showActivity(currentActivity);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToPreviousActivity() {
+            if (currentActivity > 0) {
+                currentActivity--;
+                showActivity(currentActivity);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ===== PHOTO GAME =====
+        function initPhotoGame() {
+            const grid = document.getElementById('photo-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            nextExpectedId = 1;
+            document.getElementById('game-msg').innerText = '';
+
+            const shuffled = [...PHOTOS].sort(() => Math.random() - 0.5);
+            shuffled.forEach(photo => {
+                const img = document.createElement('img');
+                img.src = photo.src;
+                img.dataset.id = photo.id;
+                img.alt = photo.label;
+                img.onclick = function() {
+                    if (this.style.pointerEvents === 'none') return;
+                    if (parseInt(this.dataset.id) === nextExpectedId) {
+                        this.style.borderColor = '#4ffb4f';
+                        this.style.opacity = '0.5';
+                        this.style.pointerEvents = 'none';
+                        nextExpectedId++;
+                        if (nextExpectedId > PHOTOS.length) {
+                            document.getElementById('game-msg').innerText = '🎉 Sai mấy lần gòi bây h mới đúng hã';
+                            document.getElementById('game-msg').style.color = '#4ffb4f';
+                            setTimeout(() => {
+                                goToNextActivity();
+                            }, 1500);
+                        }
+                    } else {
+                        document.getElementById('game-msg').innerText = '❌ Sai gòi má';
+                        document.getElementById('game-msg').style.color = '#ff4d4d';
+                        setTimeout(() => {
+                            initPhotoGame();
+                        }, 800);
+                    }
+                };
+                grid.appendChild(img);
+            });
+        }
+
+        // ===== MEMORY GAME =====
+        function initMemoryGame() {
+            const grid = document.getElementById('memory-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            selectedCards = [];
+            matchedPairs = 0;
+            isProcessing = false;
+
+            let cards = [];
+            PHOTOS.forEach(photo => {
+                cards.push({ type: 'image', data: photo, pairId: photo.id });
+                cards.push({ type: 'caption', data: photo, pairId: photo.id });
+            });
+
+            cards = cards.sort(() => Math.random() - 0.5);
+
+            document.getElementById('total-pairs').innerText = PHOTOS.length;
+            document.getElementById('match-count').innerText = '0';
+
+            cards.forEach((card, index) => {
+                const div = document.createElement('div');
+                div.className = 'memory-card';
+                div.dataset.index = index;
+                div.dataset.pairId = card.pairId;
+                div.dataset.type = card.type;
+                div.innerText = '❓';
+                div.onclick = () => flipCard(div, card);
+                grid.appendChild(div);
+            });
+        }
+
+        function flipCard(element, cardData) {
+            if (isProcessing) return;
+            if (element.classList.contains('flipped') || element.classList.contains('matched')) return;
+            if (selectedCards.length >= 2) return;
+
+            element.classList.add('flipped');
+            element.style.background = 'white';
+            element.style.color = '#333';
+
+            if (cardData.type === 'image') {
+                element.innerHTML =
+                    `<img src="${cardData.data.src}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`;
+            } else {
+                element.innerHTML = `<span class="caption-text">${cardData.data.caption}</span>`;
+            }
+
+            selectedCards.push({ element, pairId: cardData.pairId, type: cardData.type });
+
+            if (selectedCards.length === 2) {
+                isProcessing = true;
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = selectedCards;
+
+            if (card1.pairId === card2.pairId && card1.type !== card2.type) {
+                matchedPairs++;
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                card1.element.style.borderColor = '#4ffb4f';
+                card2.element.style.borderColor = '#4ffb4f';
+                card1.element.style.pointerEvents = 'none';
+                card2.element.style.pointerEvents = 'none';
+
+                document.getElementById('match-count').innerText = matchedPairs;
+
+                if (matchedPairs === PHOTOS.length) {
+                    document.getElementById('memory-status').innerHTML = '🎉 Tới h mới đúng hết, hơi lâu é';
+                    document.getElementById('memory-status').style.color = '#4ffb4f';
+                    setTimeout(() => {
+                        goToNextActivity();
+                    }, 1500);
+                }
+            } else {
+                card1.element.style.borderColor = '#ff4d4d';
+                card2.element.style.borderColor = '#ff4d4d';
+                setTimeout(() => {
+                    card1.element.classList.remove('flipped');
+                    card2.element.classList.remove('flipped');
+                    card1.element.style.cssText =
+                        'background: linear-gradient(45deg, var(--secondary), var(--primary)); border-color: rgba(255,255,255,0.2);';
+                    card2.element.style.cssText =
+                        'background: linear-gradient(45deg, var(--secondary), var(--primary)); border-color: rgba(255,255,255,0.2);';
+                    card1.element.innerText = '❓';
+                    card2.element.innerText = '❓';
+                }, 600);
+            }
+            selectedCards = [];
+            isProcessing = false;
+        }
+
+        // ===== MAP - CẢI TIẾN =====
+        function initMap() {
+            const map = document.getElementById('memory-map');
+            if (!map) return;
+
+            // Xóa các marker cũ (giữ lại route-line)
+            const routeLineDiv = document.getElementById('route-line');
+            map.innerHTML = '';
+            map.appendChild(routeLineDiv);
+
+            // Vị trí các mốc trên bản đồ - được sắp xếp theo trình tự thời gian
+            const markerPositions = [
+                 { top: '20%', left: '16%' },     // 1 - Trên trái
+    { top: '13%', left: '50%' },     // 2 - Trên giữa
+    { top: '15%', left: '88%' },     // 3 - Trên phải
+    
+    // Lớp 2: Lớp giữa - lệch so với mép
+    { top: '42%', left: '25%' },    // 4 - Trái trên
+    { top: '50%', left: '55%' },    // 5 - Trung tâm
+    { top: '45%', left: '82%' },    // 6 - Phải trên
+    
+    // Lớp 3: Lớp dưới
+    { top: '75%', left: '18%' },    // 7 - Trái dưới
+    { top: '70%', left: '50%' },    // 8 - Dưới giữa
+    { top: '80%', left: '85%' },    // 9 - Phải dưới
+            ];
+
+            const colors = ['#ffca3a', '#4cc9f0', '#f72585', '#4cc9f0', '#ffca3a', '#f72585','#f72585' , '#ffca3a','#4cc9f0' ];
+
+            // Tạo các marker
+            PHOTOS.forEach((photo, index) => {
+                const pos = markerPositions[index];
+                const color = colors[index % colors.length];
+                const marker = document.createElement('div');
+                marker.className = 'map-marker';
+                marker.style.top = pos.top;
+                marker.style.left = pos.left;
+                marker.dataset.photoId = photo.id;
+                marker.dataset.index = index;
+
+                const emojis = ['📍', '🌅', '🎄', '🏮', '👫', '❤️', '🎓', '🏮', '🎄'];
+
+                marker.innerHTML = `
+                        <div class="marker-dot" style="background: radial-gradient(circle, ${color}, ${color}aa); box-shadow: 0 0 30px ${color}66;">
+                ${emojis[index % emojis.length]}
+                    </div>
+                    <div class="marker-label">${photo.label}</div>
+                `;
+
+                marker.onclick = function(e) {
+                    e.stopPropagation();
+                    // Xóa active của tất cả marker
+                    document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
+                    // Active marker này
+                    this.classList.add('active');
+                    showMapPopup(photo.id);
+                };
+
+                map.appendChild(marker);
+            });
+
+            // Vẽ đường nối các mốc
+            drawRouteLine(markerPositions);
+        }
+
+        function drawRouteLine(positions) {
+            const routeDiv = document.getElementById('route-line');
+            if (!routeDiv) return;
+
+            // Lấy kích thước thực tế của map
+            const map = document.getElementById('memory-map');
+            const rect = map.getBoundingClientRect();
+            const width = map.offsetWidth;
+            const height = map.offsetHeight;
+
+            // Tạo SVG với kích thước tuyệt đối
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.pointerEvents = 'none';
+            svg.style.zIndex = '1';
+
+            /* Tạo đường path uốn éo (bezier curve)
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+            // Chuyển đổi % sang pixel tương đối
+            let pathD = '';
+            positions.forEach((pos, index) => {
+                const x = parseFloat(pos.left);
+                const y = parseFloat(pos.top);
+                const px = (x / 100) * width;
+                const py = (y / 100) * height;
+
+                if (index === 0) {
+                    pathD += `M ${px} ${py}`;
+                } else {
+                    // Tạo đường cong uốn éo giữa các điểm
+                    const prevPos = positions[index - 1];
+                    const prevX = (parseFloat(prevPos.left) / 100) * width;
+                    const prevY = (parseFloat(prevPos.top) / 100) * height;
+
+                    // Điểm điều khiển (uốn cong)
+                    const midX = (prevX + px) / 2;
+                    const midY = (prevY + py) / 2;
+                    
+                    // Tạo độ cong ngẫu nhiên nhưng có kiểm soát
+                    const offsetX = (Math.random() - 0.5) * 60;
+                    const offsetY = (Math.random() - 0.5) * 60 + 20;
+                    
+                    const ctrlX = midX + offsetX;
+                    const ctrlY = midY + offsetY;
+
+                    // Sử dụng quadratic bezier
+                    pathD += ` Q ${ctrlX} ${ctrlY}, ${px} ${py}`;
+                }
+            });
+
+            path.setAttribute('d', pathD);
+            path.setAttribute('stroke', 'rgba(255, 202, 58, 0.5)');
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('stroke-dasharray', '10, 8');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-linecap', 'round');
+            
+            // Thêm glow effect
+            path.style.filter = 'drop-shadow(0 0 10px rgba(255, 202, 58, 0.3))';
+            path.style.animation = 'dashFlow 2s linear infinite';
+
+            svg.appendChild(path);
+            routeDiv.appendChild(svg);*/
+        }
+
+        function showMapPopup(photoId) {
+            const photo = PHOTOS.find(p => p.id === photoId);
+            if (!photo) return;
+
+            const popup = document.getElementById('memory-popup');
+            document.getElementById('popup-title').innerText = '📸 ' + photo.label;
+
+            const img = document.getElementById('popup-image');
+            img.src = photo.src;
+            img.style.display = 'block';
+
+            const descriptions = [
+                'Đây chắc là một trong những bức ảnh đầu tiên mà t với m chụp với nhau ha 📸✨',
+                'Đi chơi đêm giao thừa, xong cái đi chơi con tàu bay, t thì "wao"🤩, còn m thì "ụa ụa" 🤮',
+                'Đi cafe tâm sự mà t tưởng qua hai tăng uống rượu 🍷',
+                'Đi lễ 18/5 nè, ngừ toàn là ngừ 😄',
+                'Gặp lại năm ta 60 nhoa bòa, mãi iuuuu 💕',
+                'Mình cùng nhau ngắm pháo hoaa, lúc về kẹt xe sợ về không kịp đón giao thừa mà má chạy lạng lách đúng hay (nể bạn thiệc) 🎆',
+                'Đi quảng trường chụp hình nè, làm khùng làm đin, hông bít ngại là gì lun ớ, cừ xĩu, dễ thuông quá chời quá đất lunnnn 🤡💕',
+                'Đến hẹn lại lên, đi dặm bùa chống ngại típ 📸✨',
+                'Chắc đây là tấm ảnh bình thường nhất hee, dáng vẻ của chúng ta sau 8 năm-lần đầu chụp chung 📸✨💅 '
+                
+            ];
+            document.getElementById('popup-description').innerText = descriptions[photo.id - 1];
+
+            popup.style.display = 'block';
+
+            confetti({ particleCount: 15, spread: 30, startVelocity: 10 });
+
+            // Clear timeout cũ nếu có
+            if (popupTimeout) {
+                clearTimeout(popupTimeout);
+            }
+
+            // Tự động đóng sau 8 giây
+            popupTimeout = setTimeout(() => {
+                closePopup();
+                // Bỏ active của marker
+                document.querySelectorAll('.map-marker').forEach(m => m.classList.remove('active'));
+            }, 10000);
+        }
+
+        function closePopup() {
+            document.getElementById('memory-popup').style.display = 'none';
+            if (popupTimeout) {
+                clearTimeout(popupTimeout);
+                popupTimeout = null;
+            }
+        }
+
+        // ===== WISH =====
+        function sendToUniverse() {
+            const wish = document.getElementById('wish-input').value;
+            const btn = document.querySelector('.send-btn');
+
+            if (wish.length < 3) {
+                alert("Viết điều ước vào nho, để t thấy và làm ngơ :)))");
+                return;
+            }
+
+            btn.innerText = "🚀 ĐANG GỬI...";
+            btn.disabled = true;
+
+            const serviceID = 'nguiine';
+            const templateID = 'template_bn5voni';
+            const templateParams = {
+                message: wish,
+                to_name: "Chủ nhân trang web"
+            };
+
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function() {
+                    alert("✨ Nguyện vọng của bạn đã được gửi lên vũ trụ ✨");
+                    document.getElementById('wish-input').style.display = 'none';
+                    btn.style.display = 'none';
+                    document.getElementById('reward-area').style.display = 'block';
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.9 } });
+
+                    setTimeout(() => {
+                        goToNextActivity();
+                    }, 2000);
+                })
+                .catch(function(error) {
+                    alert("⚠️ Có lỗi xảy ra, nhưng vũ trụ vẫn nghe thấy cậu! ✨");
+                    btn.innerText = "🚀 GỬI LÊN ZŨ TRỤ";
+                    btn.disabled = false;
+                    document.getElementById('wish-input').style.display = 'none';
+                    btn.style.display = 'none';
+                    document.getElementById('reward-area').style.display = 'block';
+                    setTimeout(() => {
+                        goToNextActivity();
+                    }, 1500);
+                });
+        }
+
+        // ===== STARFIELD =====
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const numStars = 300;
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2.5 + 0.5,
+                    speed: Math.random() * 0.15 + 0.02,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkleSpeed: Math.random() * 0.02 + 0.005
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                star.opacity += (Math.random() - 0.5) * star.twinkleSpeed * 2;
+                star.opacity = Math.max(0.1, Math.min(1, star.opacity));
+
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+
+                star.y -= star.speed;
+                if (star.y < -10) {
+                    star.y = canvas.height + 10;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', () => {
+            initStars();
+            // Vẽ lại route khi resize
+            setTimeout(() => {
+                const map = document.getElementById('memory-map');
+                const routeLine = document.getElementById('route-line');
+                if (routeLine) {
+                    routeLine.innerHTML = '';
+                    const positions = [
+                        { top: '12%', left: '12%' },
+                        { top: '8%', left: '48%' },
+                        { top: '22%', left: '78%' },
+                        { top: '42%', left: '85%' },
+                        { top: '58%', left: '72%' },
+                        { top: '68%', left: '45%' },
+                        { top: '78%', left: '22%' },
+                        { top: '62%', left: '10%' },
+                        { top: '42%', left: '18%' }
+                    ];
+                    drawRouteLine(positions);
+                }
+            }, 300);
+        });
+
+        initStars();
+        drawStars();
+
+        // ===== TOUCH SWIPE =====
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', e => {
+            const deltaX = e.changedTouches[0].screenX - touchStartX;
+            const deltaY = e.changedTouches[0].screenY - touchStartY;
+
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+                if (deltaX < 0) {
+                    goToNextActivity();
+                } else {
+                    goToPreviousActivity();
+                }
+            }
+        });
+
+        // ===== KEYBOARD =====
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') goToNextActivity();
+            if (e.key === 'ArrowLeft') goToPreviousActivity();
+        });
+
+        // ===== INIT =====
+        function initAll() {
+            initPhotoGame();
+            initMemoryGame();
+            initMap();
+            updateProgress(0, 6);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initAll();
+            console.log('🎂 Happy Birthday! Website loaded successfully!');
+        });
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initAll();
+            console.log('🎂 Happy Birthday! Website loaded successfully!');
+        }
+    </script>
+</body>
+</html>
